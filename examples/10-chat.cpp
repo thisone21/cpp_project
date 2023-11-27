@@ -9,7 +9,7 @@ int main() {
     {
         "model": "gpt-3.5-turbo",
         "messages":[{"role":"user", "content":"blah"}],
-        "max_tokens": 7,
+        "max_tokens": 200,
         "temperature": 0
     }
     )"_json);
