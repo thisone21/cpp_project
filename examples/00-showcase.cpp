@@ -38,8 +38,8 @@ int main() {
 	auto completion = openai::completion().create(R"(
 	  {
 	  "model": "text-davinci-003",
-	  "prompt": "Say this is a test",
-	  "max_tokens": 7,
+	  "prompt": "Translate semiconductor into korean",
+	  "max_tokens": 200,
 	  "temperature": 0
 	  }
 	  )"_json); // Using user-defined (raw) string literals
