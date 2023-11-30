@@ -76,6 +76,7 @@ private:
 	string translatedText;
 };
 
+
 //단어장 클래스
 class wordlist
 {

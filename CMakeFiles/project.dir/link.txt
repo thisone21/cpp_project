@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/project.dir/project.cpp.o -o project  -lcurl 
