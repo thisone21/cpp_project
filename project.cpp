@@ -12,7 +12,7 @@ int main()
     vector<wordlist> w_lists;
 
     cout << "안녕하세요? 단어장에 오신 것을 환영합니다." << endl;
-    cout << "어떤 작업을 하고 싶으신가요? 숫자로 입력해 주세요." << endl;
+    cout << "어떤 작업을 하고 싶으신가요? 숫자로 입력해 주세요." << endl << endl;
     cout << "1. 만능 번역기 2. 단어 검색" << endl;
     cout << "각 기능들에 대한 설명이 필요하시다면, help를 입력해 주세요." << endl;
     cout << "나 : ";
@@ -37,7 +37,7 @@ int main()
     {
         if (userInput == "exit")
         {
-            cout << "종료합니다. 수고 많으셨습니다" << endl;
+            cout << endl << "종료합니다. 수고 많으셨습니다" << endl;
             return 0;
         }
         else if (userInput == "help")
@@ -72,8 +72,8 @@ int main()
                 request["model"] = "gpt-3.5-turbo-1106";
                 request["messages"][0]["role"] = "system";
                 request["messages"][0]["content"] = "you are a translator model which translates a korean word input into english, and give only the translated word without any other words";
-                request["messages"][0]["role"] = "user";
-                request["messages"][0]["content"] = "translate" + newword.getkor() + " into english and give only a translated word, without anything else";
+                request["messages"][1]["role"] = "user";
+                request["messages"][1]["content"] = "translate" + newword.getkor() + " into english and give only a translated word, without anything else";
                 request["temperature"] = 0;
 
                 auto chat = openai::chat().create(request);
@@ -91,8 +91,8 @@ int main()
                 request["model"] = "gpt-3.5-turbo-1106";
                 request["messages"][0]["role"] = "system";
                 request["messages"][0]["content"] = "you are a language model that makes an example sentence from the given word and prints the example sentence";
-                request["messages"][0]["role"] = "user";
-                request["messages"][0]["content"] = "make an example sentence that includes" + newword.geteng() + "and give only the example sentence, without anything else";
+                request["messages"][1]["role"] = "user";
+                request["messages"][1]["content"] = "make an example sentence that includes" + newword.geteng() + "and give only the example sentence, without anything else";
                 request["temperature"] = 0;
 
                 chat = openai::chat().create(request);
@@ -163,8 +163,8 @@ int main()
                 request["model"] = "gpt-3.5-turbo-1106";
                 request["messages"][0]["role"] = "system";
                 request["messages"][0]["content"] = "you are a translator model which translates an english word input into korean, and give only the translated word without any other words";
-                request["messages"][0]["role"] = "user";
-                request["messages"][0]["content"] = "translate the word " + userInput + " into korean and give only the translated word, without pronounciation";
+                request["messages"][1]["role"] = "user";
+                request["messages"][1]["content"] = "translate the word " + userInput + " into korean and give only the translated word, without pronounciation";
                 request["temperature"] = 0;
 
                 auto chat = openai::chat().create(request);
@@ -263,8 +263,8 @@ int main()
                 request["model"] = "gpt-3.5-turbo-1106";
                 request["messages"][0]["role"] = "system";
                 request["messages"][0]["content"] = "You are a translator model which translates a korean sentence input into given language";
-                request["messages"][0]["role"] = "user";
-                request["messages"][0]["content"] = "translate" + origin.getoriginalText() + "into" + lang + "without its pronounciation";
+                request["messages"][1]["role"] = "user";
+                request["messages"][1]["content"] = "translate" + origin.getoriginalText() + "into" + lang + "without its pronounciation";
                 request["temperature"] = 0;
 
                 auto chat = openai::chat().create(request);
@@ -292,8 +292,8 @@ int main()
                 request["model"] = "gpt-3.5-turbo-1106";
                 request["messages"][0]["role"] = "system";
                 request["messages"][0]["content"] = "You are a translator model which translates a sentence input contained of given language into korean";
-                request["messages"][0]["role"] = "user";
-                request["messages"][0]["content"] = "translate" + origin.getoriginalText() + "into korean";
+                request["messages"][1]["role"] = "user";
+                request["messages"][1]["content"] = "translate" + origin.getoriginalText() + "into korean";
                 request["temperature"] = 0;
 
                 auto chat = openai::chat().create(request);

@@ -139,7 +139,7 @@ public :
 	}
 	void display()
 	{
-		cout << "현재 단어장의 단어 목록" << endl;
+		cout << endl << "단어장 " << name << "의 단어 목록" << endl;
 		for (auto it = wlst.begin(); it != wlst.end(); it++)
 		{
 			cout << "한글 : " << (*it).getkor() << " 영어 : " << (*it).geteng() << " 저장 날짜 : " << (*it).gettime()->tm_mon + 1 << "/" <<(*it).gettime()->tm_mday << endl;
