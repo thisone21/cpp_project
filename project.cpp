@@ -16,7 +16,7 @@ int main()
          << endl;
     cout << "1. 만능 번역기 2. 단어 검색 3. 단어장 관리 4. 퀴즈" << endl;
     cout << "각 기능들에 대한 설명이 필요하시다면, help를 입력해 주세요." << endl;
-    cout << "나 : ";
+    cout << "나: ";
 
     string wordexample_kor_fruit[4] = { "사과", "바나나", "배", "수박" };
     string wordexample_eng_fruit[4] = { "apple", "banana", "pear", "watermelon" };
@@ -35,6 +35,10 @@ int main()
     }
 
     w_lists.push_back(newwlist);
+
+    wordlist newlist;
+    newlist.setname("오답노트");
+    w_lists.push_back(newlist);
 
     getline(cin, userInput);
 
@@ -63,7 +67,7 @@ int main()
             cout << endl
                  << "단어 검색에 오신 것을 환영합니다." << endl;
             cout << "1. 한국어 -> 영어 2. 영어 -> 한국어 중 원하는 기능을 숫자로 입력해 주세요." << endl;
-            cout << "나 : ";
+            cout << "나: ";
             getline(cin, userInput);
 
             if (userInput == "1") // 한국어 -> 영어 단어
@@ -71,7 +75,7 @@ int main()
                 cout << endl
                      << "검색을 원하는 한국어 단어를 입력해 주세요." << endl;
                 cout << "예시) 반도체" << endl;
-                cout << "나 : ";
+                cout << "나: ";
                 getline(cin, userInput);
 
                 word newword = word(userInput);
@@ -108,12 +112,12 @@ int main()
 
                 string examsent = chat["choices"][0]["message"]["content"].dump();
                 examsent = examsent.substr(1, examsent.size() - 2);
-                cout << "예문 : " << examsent << endl;
+                cout << "예문: " << examsent << endl;
 
                 // 단어장에 추가
                 cout << endl
                      << "해당 단어를 단어장에 추가하시겠습니까? [Y/N]" << endl;
-                cout << "나 : ";
+                cout << "나: ";
                 getline(cin, userInput);
                 if (userInput == "Y" || userInput == "y")
                 {
@@ -122,7 +126,7 @@ int main()
                     {
                         cout << endl
                              << "현재 생성된 단어장이 없습니다. 새롭게 생성할 단어장의 이름을 입력해 주세요." << endl;
-                        cout << "나 : ";
+                        cout << "나: ";
                         getline(cin, w_name);
                         wordlist newwlist;
                         newwlist.setname(w_name);
@@ -165,7 +169,7 @@ int main()
                 cout << endl
                      << "검색을 원하는 영어 단어를 입력해 주세요." << endl;
                 cout << "예시) semiconductor" << endl;
-                cout << "나 : ";
+                cout << "나: ";
                 getline(cin, userInput);
 
                 Json request;
@@ -188,7 +192,7 @@ int main()
                 // 단어장에 추가
                 cout << endl
                      << "해당 단어를 단어장에 추가하시겠습니까? [Y/N]" << endl;
-                cout << "나 : ";
+                cout << "나: ";
                 getline(cin, userInput);
                 if (userInput == "Y" || userInput == "y")
                 {
@@ -196,7 +200,7 @@ int main()
                     if (w_lists.empty())
                     {
                         cout << "현재 생성된 단어장이 없습니다. 새롭게 생성할 단어장의 이름을 입력해 주세요." << endl;
-                        cout << "나 : ";
+                        cout << "나: ";
                         getline(cin, w_name);
                         wordlist newwlist;
                         newwlist.setname(w_name);
@@ -217,7 +221,7 @@ int main()
                             i++;
                         }
                         cout << endl;
-                        cout << "나 : ";
+                        cout << "나: ";
                         getline(cin, w_name);
 
                         int flag = 0;
@@ -252,7 +256,7 @@ int main()
             cout << endl
                  << "번역에 오신 것을 환영합니다." << endl;
             cout << "1. 한국어 -> 다른 언어 2. 다른 언어 -> 한국어 중 원하는 기능을 숫자로 입력해 주세요." << endl;
-            cout << "나 : ";
+            cout << "나: ";
             getline(cin, userInput);
 
             if (userInput == "1")
@@ -351,8 +355,16 @@ int main()
 
 		if(userNum == "1")
 		{
+            int grade = 0;
 			cout << endl
 				<< "어휘 퀴즈입니다. 원하는 단어장의 이름을 입력해주세요" << endl;
+            cout << "단어장 목록" << endl;
+            int i = 1;
+            for (auto it = w_lists.begin(); it != w_lists.end(); it++)
+            {
+                cout << i << ". " << (*it).getname() << " / size: " << (*it).getsize() << endl;
+                i++;
+            }
             cout << "나: ";
 			getline(cin, userWord);
 			wordlist newlist;
@@ -373,17 +385,53 @@ int main()
             for (int i = 1; i <= stoi(userCount); i++) {
                 cout << "어휘퀴즈 " << i << "번 문제" << endl;
                 int num = rand() % newlist.getsize();
-                cout << num << endl;
+                cout << newlist.getentry(num).getkor() << endl;
+                string userAnswer;
+                getline(cin, userAnswer);
+                if (userAnswer == newlist.getentry(num).geteng()) {
+                    cout << "정답입니다!" << endl;
+                    grade++;
+                }
+                else {
+                    cout << "오답입니다!" << endl;
+                    cout << "정답은 " << newlist.getentry(num).geteng() << "입니다." << endl;
+                    for (auto it = w_lists.begin(); it != w_lists.end(); it++)
+                    {
+                        if ((*it).getname() == "오답노트")
+                        {
+                            time_t curtime = time(NULL);
+                            struct tm* t = localtime(&curtime);
+                            wordentry newentry(newlist.getentry(num), t);
+                            (*it).addentry(newentry, 1);
+                            break;
+                        }
+                    }
+                }
+                cout << "현재 점수는 " << grade << "점입니다." << endl;
+                cout << endl;
             }
 
+            cout << "최종점수는 " << grade << "점입니다." << endl;
 		}
 		else if(userNum == "2")
 		{
 				cout << endl
 					<< "이미지 퀴즈입니다. 원하는 단어장의 이름을 입력해주세요" << endl;
 				cout << "나: ";
-				getline(cin, userWord);
-
+                getline(cin, userWord);
+                wordlist newlist;
+                for (auto it = w_lists.begin(); it != w_lists.end(); it++)
+                {
+                    if ((*it).getname() == userWord)
+                    {
+                        newlist = (*it);
+                        break;
+                    }
+                }
+                int num = rand() % newlist.getsize();
+                cout << newlist.getentry(num).getkor() << endl;
+                string userAnswer;
+                getline(cin, userAnswer);
 			}
 			else if(userNum == "3")
 			{
