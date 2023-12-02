@@ -3,51 +3,34 @@
 
 using Json = nlohmann::json;
 
-double cossim(const vector<double>& vec1, const vector<double>& vec2)
-{
-	double dotproduct = 0.0;
-	double norm1 = 0.0, norm2 = 0.0;
-
-	for (size_t i = 0; i < vec1.size(); i++)
-	{
-		dotproduct += vec1[i] * vec2[i];
-		norm1 += vec1[i] * vec1[i];
-		norm2 += vec2[i] * vec2[i];
-	}
-
-	if (norm1 == 0.0 || norm2 == 0.0)
-	{
-		return 0.0;
-	}
-
-	return (dotproduct / (sqrt(norm1) * sqrt(norm2)));
-}
-
 int main()
 {
 	openai::start();
 	srand((unsigned int)time(NULL));
 
 	string userInput;
-	vector<Json> chathistory;
 	vector<wordlist> w_lists;
 
-	cout << "안녕하세요? 단어장에 오신 것을 환영합니다." << endl;
-	cout << "어떤 작업을 하고 싶으신가요? 숫자로 입력해 주세요." << endl
-		<< endl;
-	cout << "1. 만능 번역기 2. 단어 검색 3. 단어장 관리 4. 퀴즈 5. 단어추측게임" << endl;
-	cout << "각 기능들에 대한 설명이 필요하시다면, help를 입력해 주세요." << endl;
-	cout << "나: ";
+	cout << "-----------------------------------------------------------------------------" << endl;
+	cout << "              안녕하세요? 언어학습 프로그램에 오신 것을 환영합니다.              " << endl;
+	cout << "-----------------------------------------------------------------------------" << endl;
+	cout << endl
+		<< "                어떤 작업을 하고 싶으신가요? 숫자로 입력해 주세요.                " << endl
+		<< "                 1. 만능 번역기 2. 단어 검색 3. 단어장 확인                      " << endl
+ 		<< "                        4. 퀴즈 5. 단어추측게임                                 " << endl
+		<< "           도움이 필요하시면 help를, 종료하시려면 exit을 입력해 주세요.           " << endl;
+	cout << endl;
+	cout << "사용자: ";
 
-	string wordexample_kor_fruit[4] = { "사과", "바나나", "배", "수박" };
-	string wordexample_eng_fruit[4] = { "apple", "banana", "pear", "watermelon" };
+	string wordexample_kor_fruit[10] = { "사과", "바나나", "배", "수박", "귤", "딸기", "복숭아", "체리", "포도", "오렌지" };
+	string wordexample_eng_fruit[10] = { "apple", "banana", "pear", "watermelon", "tangerine", "strawberry", "peach", "cherry", "grape", "orange" };
 
 	word newword(wordexample_kor_fruit[0], wordexample_eng_fruit[0]);
 
 	wordlist newwlist;
 	newwlist.setname("fruit");
 
-	for(int i=0;i<4;i++){
+	for (int i = 0; i < 10; i++) {
 		word newword(wordexample_kor_fruit[i], wordexample_eng_fruit[i]);
 		time_t curtime = time(NULL);
 		struct tm* t = localtime(&curtime);
@@ -62,37 +45,110 @@ int main()
 	w_lists.push_back(newlist);
 
 	getline(cin, userInput);
-
+	
 	while (1)
 	{
 		if (userInput == "exit")
 		{
 			cout << endl
-				<< "종료합니다. 수고 많으셨습니다" << endl;
+				<< "프로그램이 종료됩니다. 감사합니다." << endl;
 			return 0;
 		}
 		else if (userInput == "help")
 		{
-			cout << "1. 번역" << endl;
-			cout << "-입력해주신 문장을 원하는 언어로 번역해 드립니다." << endl
+			cout << endl;
+			cout << "-----------------------------------------------------------------------------" << endl;
+			cout << "                                   1. 번역                                   " << endl;
+			cout << "입력해주신 문장을 원하는 언어로 번역해 드립니다." << endl
 				<< endl;
 			cout << "2. 단어 검색" << endl;
-			cout << "-궁금한 단어의 영/한, 한/영 번역을 도와드립니다." << endl
+			cout << "궁금한 단어의 영/한, 한/영 번역을 도와드립니다." << endl
 				<< endl;
-			cout << "3. 단어장 관리" << endl;
-			cout << "-단어장을 확인하고, 원하는 기준으로 정렬할 수 있습니다." << endl
+			cout << "3. 단어장 확인" << endl;
+			cout << "생성되어 있는 단어장을 확인할 수 있습니다." << endl
 				<< endl;
 			cout << "4. 퀴즈" << endl;
-			cout << "-어휘 퀴즈와 이미지 퀴즈를 진행할 수 있습니다." << endl
+			cout << "어휘 퀴즈와 이미지 퀴즈를 진행할 수 있습니다." << endl
 				<< endl;
 			cout << "5. 단어추측게임" << endl;
+			cout << "단어 간의 유사도를 통해 정답을 맞추는 게임을 진행할 수 있습니다." << endl;
+			cout << "-----------------------------------------------------------------------------" << endl;
+			cout << endl;
+		}
+		else if (userInput == "1") // 번역
+		{
+			cout << endl
+				<< "-----------------------------번역에 오신 것을 환영합니다.-----------------------------" << endl;
+			cout << "1. 한국어->다른 언어 번역 2. 다른 언어->한국어 번역 중 원하는 기능을 숫자로 입력해 주세요." << endl;
+			cout << "사용자: ";
+			getline(cin, userInput);
+
+			if (userInput == "1")
+			{
+				cout << endl
+					<< "번역을 원하시는 문장을 입력해주세요.(한국어)" << endl;
+				cout << "사용자: ";
+				getline(cin, userInput);
+				Sentence origin = Sentence(userInput);
+				cout << endl
+					<< "번역을 원하시는 언어를 입력해주세요." << endl;
+				cout << "사용자: ";
+				getline(cin, userInput);
+
+				Json request;
+				request["model"] = "gpt-3.5-turbo-1106";
+				request["messages"][0]["role"] = "system";
+				request["messages"][0]["content"] = "You are a translator model which translates a korean sentence input into given language";
+				request["messages"][1]["role"] = "user";
+				request["messages"][1]["content"] = "translate" + origin.getoriginalText() + "into" + userInput + "without its pronounciation";
+				request["temperature"] = 0;
+
+				auto chat = openai::chat().create(request);
+
+				string translatedText = chat["choices"][0]["message"]["content"].dump();
+				translatedText = translatedText.substr(1, translatedText.size() - 2);
+				cout << endl
+					<< "한국어에서 " << userInput <<"(으)로의 번역입니다." << endl
+					<< "번역 결과는 다음과 같습니다: " << translatedText << endl;
+				origin.add_engtrans(translatedText);
+			}
+			else if (userInput == "2")
+			{
+				cout << endl
+					<< "번역을 원하시는 언어를 입력해주세요." << endl;
+				cout << "사용자: ";
+				getline(cin, userInput);
+				string lang = userInput;
+				cout << endl
+					<< "번역을 원하시는 문장을 입력해주세요(" << userInput << ")." << endl;
+				cout << "사용자: ";
+				getline(cin, userInput);
+				Sentence origin = Sentence(userInput);
+
+				Json request;
+				request["model"] = "gpt-3.5-turbo-1106";
+				request["messages"][0]["role"] = "system";
+				request["messages"][0]["content"] = "You are a translator model which translates a sentence input of given language into korean";
+				request["messages"][1]["role"] = "user";
+				request["messages"][1]["content"] = "translate" + origin.getoriginalText() + "into korean";
+				request["temperature"] = 0;
+
+				auto chat = openai::chat().create(request);
+
+				string translatedText = chat["choices"][0]["message"]["content"].dump();
+				translatedText = translatedText.substr(1, translatedText.size() - 2);
+				cout << endl
+					<< lang << "에서 한국어로의 번역입니다." << endl
+					<< "번역 결과는 다음과 같습니다: " << translatedText << endl;
+				origin.add_kortrans(translatedText);
+			}
 		}
 		else if (userInput == "2") // 단어 검색
 		{
 			cout << endl
 				<< "단어 검색에 오신 것을 환영합니다." << endl;
 			cout << "1. 한국어 -> 영어 2. 영어 -> 한국어 중 원하는 기능을 숫자로 입력해 주세요." << endl;
-			cout << "나: ";
+			cout << "사용자: ";
 			getline(cin, userInput);
 
 			if (userInput == "1") // 한국어 -> 영어 단어
@@ -100,7 +156,7 @@ int main()
 				cout << endl
 					<< "검색을 원하는 한국어 단어를 입력해 주세요." << endl;
 				cout << "예시) 반도체" << endl;
-				cout << "나: ";
+				cout << "사용자: ";
 				getline(cin, userInput);
 
 				word newword = word(userInput);
@@ -276,73 +332,6 @@ int main()
 				}
 			}
 		}
-		else if (userInput == "1") // 번역
-		{
-			cout << endl
-				<< "번역에 오신 것을 환영합니다." << endl;
-			cout << "1. 한국어 -> 다른 언어 2. 다른 언어 -> 한국어 중 원하는 기능을 숫자로 입력해 주세요." << endl;
-			cout << "나: ";
-			getline(cin, userInput);
-
-			if (userInput == "1")
-			{
-				cout << endl
-					<< "번역을 원하시는 문장을 입력해주세요." << endl;
-				cout << "나: ";
-				getline(cin, userInput);
-				Sentence origin = Sentence(userInput);
-				cout << endl
-					<< "번역을 원하시는 언어를 입력해주세요." << endl;
-				cout << "나: ";
-				getline(cin, userInput);
-				string lang = userInput;
-
-				Json request;
-				request["model"] = "gpt-3.5-turbo-1106";
-				request["messages"][0]["role"] = "system";
-				request["messages"][0]["content"] = "You are a translator model which translates a korean sentence input into given language";
-				request["messages"][1]["role"] = "user";
-				request["messages"][1]["content"] = "translate" + origin.getoriginalText() + "into" + lang + "without its pronounciation";
-				request["temperature"] = 0;
-
-				auto chat = openai::chat().create(request);
-
-				string translatedText = chat["choices"][0]["message"]["content"].dump();
-				translatedText = translatedText.substr(1, translatedText.size() - 2);
-				cout << endl
-					<< "문장 번역 결과는 다음과 같습니다: " << translatedText << endl;
-				origin.add_engtrans(translatedText);
-			}
-			else if (userInput == "2")
-			{
-				cout << endl
-					<< "번역을 원하시는 언어를 입력해주세요." << endl;
-				cout << "나: ";
-				getline(cin, userInput);
-				string lang = userInput;
-				cout << endl
-					<< "번역을 원하시는 문장을 입력해주세요." << endl;
-				cout << "나: ";
-				getline(cin, userInput);
-				Sentence origin = Sentence(userInput);
-
-				Json request;
-				request["model"] = "gpt-3.5-turbo-1106";
-				request["messages"][0]["role"] = "system";
-				request["messages"][0]["content"] = "You are a translator model which translates a sentence input contained of given language into korean";
-				request["messages"][1]["role"] = "user";
-				request["messages"][1]["content"] = "translate" + origin.getoriginalText() + "into korean";
-				request["temperature"] = 0;
-
-				auto chat = openai::chat().create(request);
-
-				string translatedText = chat["choices"][0]["message"]["content"].dump();
-				translatedText = translatedText.substr(1, translatedText.size() - 2);
-				cout << endl
-					<< "문장 번역 결과는 다음과 같습니다: " << translatedText << endl;
-				origin.add_kortrans(translatedText);
-			}
-		}
 		else if (userInput == "3") // 단어장 확인
 		{
 			cout << endl
@@ -438,13 +427,13 @@ int main()
 				cout << "원하시는 횟수를 입력해주세요" << endl;
 				cout << "나: ";
 				getline(cin, userCount);
-				
+
 				int *checker;
 				checker = (int*)calloc(newlist.getsize(), sizeof(int));
-				
+
 				for (int i = 1; i <= stoi(userCount); i++) {
 					cout << "어휘퀴즈 " << i << "번 문제" << endl;
-					
+
 					int num = rand() % newlist.getsize();
 					while(checker[num] == 1){
 						num = rand() % newlist.getsize();
@@ -622,19 +611,14 @@ int main()
 				}
 			}
 		}
-		/*int i = 1;
-		  for (auto it = w_lists.begin(); it != w_lists.end(); it++)
-		  {
-		  cout << "단어장 " << (*it).getname() << endl;
-		  (*it).display();
-		  cout << endl;
-		  i++;
-		  }*/
+
 		cout << endl
-			<< "어떤 작업을 하고 싶으신가요?" << endl
-			<< "1. 만능 번역기 2. 단어 검색 3. 단어장 관리 4. 퀴즈 5. 단어추측게임" << endl
-			<< "숫자로 입력해 주세요.도움이 필요하시면 help를, 종료하시려면 exit를 입력해 주세요." << endl;
-		cout << "나 : ";
+			<< "                어떤 작업을 하고 싶으신가요? 숫자로 입력해 주세요.                " << endl
+			<< "                 1. 만능 번역기 2. 단어 검색 3. 단어장 확인                      " << endl
+			<< "                        4. 퀴즈 5. 단어추측게임                                 " << endl
+			<< "           도움이 필요하시면 help를, 종료하시려면 exit을 입력해 주세요.           " << endl;
+		cout << endl;
+		cout << "사용자: ";
 		getline(cin, userInput);
 	}
 
