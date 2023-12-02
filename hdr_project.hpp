@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <ctime>
 #include <cstdlib>
+#include <cmath>
 
 using namespace std;
 
@@ -106,7 +107,9 @@ private:
 class wordlist
 {
 public :
-	wordlist(){};
+	wordlist(){
+		size = 0;
+	};
 	void setname(string _name)
 	{
 		name = _name;
