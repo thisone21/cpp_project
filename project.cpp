@@ -14,28 +14,29 @@ int main()
     cout << "안녕하세요? 단어장에 오신 것을 환영합니다." << endl;
     cout << "어떤 작업을 하고 싶으신가요? 숫자로 입력해 주세요." << endl
          << endl;
-    cout << "1. 만능 번역기 2. 단어 검색 3. 단어장 관리" << endl;
+    cout << "1. 만능 번역기 2. 단어 검색 3. 단어장 관리 4. 퀴즈" << endl;
     cout << "각 기능들에 대한 설명이 필요하시다면, help를 입력해 주세요." << endl;
     cout << "나 : ";
-    getline(cin, userInput);
 
-    if (userInput == "help")
-    {
-        // cout << endl;
-        // cout << "*************************도움말*************************" << endl;
-        cout << "1. 번역" << endl;
-        cout << "-입력해주신 문장을 원하는 언어로 번역해 드립니다." << endl
-             << endl;
-        cout << "2. 단어 검색" << endl;
-        cout << "-궁금한 단어의 영/한, 한/영 번역을 도와드립니다." << endl
-             << endl;
-        cout << "3. 단어장 관리" << endl;
-        cout << "-단어장을 확인하고, 원하는 기준으로 정렬할 수 있습니다." << endl
-             << endl;
-        cout << "어떤 작업을 하고 싶으신가요? 숫자로 입력해 주세요." << endl;
-        cout << "나 : ";
-        getline(cin, userInput);
+    string wordexample_kor_fruit[4] = { "사과", "바나나", "배", "수박" };
+    string wordexample_eng_fruit[4] = { "apple", "banana", "pear", "watermelon" };
+
+    word newword(wordexample_kor_fruit[0], wordexample_eng_fruit[0]);
+
+    wordlist newwlist;
+    newwlist.setname("fruit");
+
+    for(int i=0;i<4;i++){
+        word newword(wordexample_kor_fruit[i], wordexample_eng_fruit[i]);
+        time_t curtime = time(NULL);
+        struct tm* t = localtime(&curtime);
+        wordentry newentry(newword, t);
+        newwlist.addentry(newentry, 0);
     }
+
+    w_lists.push_back(newwlist);
+
+    getline(cin, userInput);
 
     while (1)
     {
@@ -128,7 +129,7 @@ int main()
                         time_t curtime = time(NULL);
                         struct tm *t = localtime(&curtime);
                         wordentry newentry(newword, t);
-                        newwlist.addentry(newentry);
+                        newwlist.addentry(newentry, 1);
                         w_lists.push_back(newwlist);
                     }
                     else
@@ -152,7 +153,7 @@ int main()
                                 time_t curtime = time(NULL);
                                 struct tm *t = localtime(&curtime);
                                 wordentry newentry(newword, t);
-                                (*it).addentry(newentry);
+                                (*it).addentry(newentry, 1);
                                 break;
                             }
                         }
@@ -202,7 +203,7 @@ int main()
                         time_t curtime = time(NULL);
                         struct tm *t = localtime(&curtime);
                         wordentry newentry(newword, t);
-                        newwlist.addentry(newentry);
+                        newwlist.addentry(newentry, 1);
                         w_lists.push_back(newwlist);
                     }
                     else
@@ -227,7 +228,7 @@ int main()
                                 time_t curtime = time(NULL);
                                 struct tm *t = localtime(&curtime);
                                 wordentry newentry(newword, t);
-                                (*it).addentry(newentry);
+                                (*it).addentry(newentry, 1);
                                 flag = 1;
                                 break;
                             }
@@ -239,7 +240,7 @@ int main()
                             time_t curtime = time(NULL);
                             struct tm *t = localtime(&curtime);
                             wordentry newentry(newword, t);
-                            newwlist.addentry(newentry);
+                            newwlist.addentry(newentry, 1);
                             w_lists.push_back(newwlist);
                         }
                     }
@@ -338,16 +339,75 @@ int main()
 
             }
         }
+	else if (userInput == "4"){
+		string userNum;
+		string userWord;
+        string userCount;
+		cout << endl
+			<< "퀴즈에 오신 것을 환영합니다." << endl;
+		cout << "1. 어휘 퀴즈 2. 이미지 퀴즈 3. 랜덤 퀴즈 중 원하는 퀴즈를 숫자로 입력해 주세요." << endl;
+		cout << "나: ";
+		getline(cin, userNum);
+
+		if(userNum == "1")
+		{
+			cout << endl
+				<< "어휘 퀴즈입니다. 원하는 단어장의 이름을 입력해주세요" << endl;
+            cout << "나: ";
+			getline(cin, userWord);
+			wordlist newlist;
+			for (auto it = w_lists.begin(); it != w_lists.end(); it++)
+			{
+				if ((*it).getname() == userWord)
+				{
+					newlist = (*it);
+					break;
+				}
+			}
+            cout << "원하시는 횟수를 입력해주세요" << endl;
+            cout << "나: ";
+            getline(cin, userCount);
+
+            srand((unsigned int)time(NULL));
+            
+            for (int i = 1; i <= stoi(userCount); i++) {
+                cout << "어휘퀴즈 " << i << "번 문제" << endl;
+                int num = rand() % newlist.getsize();
+                cout << num << endl;
+            }
+
+		}
+		else if(userNum == "2")
+		{
+				cout << endl
+					<< "이미지 퀴즈입니다. 원하는 단어장의 이름을 입력해주세요" << endl;
+				cout << "나: ";
+				getline(cin, userWord);
+
+			}
+			else if(userNum == "3")
+			{
+				cout << endl
+					<< "랜덤  퀴즈입니다. 원하는 단어장의 이름을 입력해주세요" << endl;
+				cout << "나: ";
+				getline(cin, userWord);
+
+			}
+
+		}
+
         int i = 1;
         for (auto it = w_lists.begin(); it != w_lists.end(); it++)
         {
-            cout << "단어장 " << i << endl;
+            cout << "단어장 " << (*it).getname() << endl;
             (*it).display();
             cout << endl;
             i++;
         }
         cout << endl
-             << "어떤 작업을 하고 싶으신가요? 숫자로 입력해 주세요. 도움이 필요하시면 help를, 종료하시려면 exit를 입력해 주세요." << endl;
+            << "어떤 작업을 하고 싶으신가요?" << endl
+            << "1. 만능 번역기 2. 단어 검색 3. 단어장 관리 4. 퀴즈" << endl
+            << "숫자로 입력해 주세요.도움이 필요하시면 help를, 종료하시려면 exit를 입력해 주세요." << endl;
         cout << "나 : ";
         getline(cin, userInput);
     }

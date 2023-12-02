@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -110,8 +111,9 @@ public :
 	{
 		name = _name;
 	}
-	string getname(){return name;}
-	void addentry(wordentry _entry)
+	string getname() { return name; }
+	int getsize() { return size; }
+	void addentry(wordentry _entry, int a)
 	{
 		auto it = find(wlst.begin(), wlst.end(), _entry);
 		if (it != wlst.end())
@@ -122,7 +124,8 @@ public :
 
 		wlst.push_back(_entry);
 		size++;
-		cout << "단어장에 추가 : " << _entry.getkor() << endl;
+		if(a)
+			cout << "단어장에 추가 : " << _entry.getkor() << endl;
 	};
 	void removeentry(wordentry _entry)
 	{
