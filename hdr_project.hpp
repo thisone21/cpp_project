@@ -149,7 +149,7 @@ public :
 		cout << endl << "단어장 " << name << "의 단어 목록" << endl;
 		for (auto it = wlst.begin(); it != wlst.end(); it++)
 		{
-			cout << "한글 : " << (*it).getkor() << " 영어 : " << (*it).geteng() << " 저장 날짜 : " << (*it).gettime()->tm_mon + 1 << "/" <<(*it).gettime()->tm_mday << endl;
+			cout << "한글: " << (*it).getkor() << " 영어: " << (*it).geteng() << " 저장 날짜: " << (*it).gettime()->tm_mon + 1 << "/" <<(*it).gettime()->tm_mday << endl;
 		}
 	}
 	wordentry getentry(int num)
@@ -161,5 +161,26 @@ private :
 	vector<wordentry> wlst;
 	unsigned size;
 };
+
+double cossim(const vector<double>& vec1, const vector<double>& vec2)
+{
+	double dotproduct = 0.0;
+	double norm1 = 0.0, norm2 = 0.0;
+
+	for (size_t i = 0; i < vec1.size(); i++)
+	{
+		dotproduct += vec1[i] * vec2[i];
+		norm1 += vec1[i] * vec1[i];
+		norm2 += vec2[i] * vec2[i];
+	}
+
+	if (norm1 == 0.0 || norm2 == 0.0)
+	{
+		return 0.0;
+	}
+
+	return (dotproduct / (sqrt(norm1) * sqrt(norm2)));
+}
+
 
 
