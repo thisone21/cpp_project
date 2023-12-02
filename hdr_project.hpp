@@ -127,8 +127,9 @@ public :
 
 		wlst.push_back(_entry);
 		size++;
-		if(a)
-			cout << "단어장에 추가 : " << _entry.getkor() << endl;
+		if(a){
+			cout << "단어장에 추가 : " << _entry.geteng() << endl;
+		}
 	};
 	void removeentry(wordentry _entry)
 	{
