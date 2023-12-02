@@ -6,6 +6,7 @@ using Json = nlohmann::json;
 int main()
 {
     openai::start();
+    srand((unsigned int)time(NULL));
 
     string userInput;
     vector<Json> chathistory;
@@ -379,8 +380,6 @@ int main()
             cout << "원하시는 횟수를 입력해주세요" << endl;
             cout << "나: ";
             getline(cin, userCount);
-
-            srand((unsigned int)time(NULL));
             
             for (int i = 1; i <= stoi(userCount); i++) {
                 cout << "어휘퀴즈 " << i << "번 문제" << endl;
@@ -417,6 +416,13 @@ int main()
 		{
 				cout << endl
 					<< "이미지 퀴즈입니다. 원하는 단어장의 이름을 입력해주세요" << endl;
+                cout << "단어장 목록" << endl;
+                int i = 1;
+                for (auto it = w_lists.begin(); it != w_lists.end(); it++)
+                {
+                    cout << i << ". " << (*it).getname() << " / size: " << (*it).getsize() << endl;
+                    i++;
+                }
 				cout << "나: ";
                 getline(cin, userWord);
                 wordlist newlist;
@@ -428,30 +434,63 @@ int main()
                         break;
                     }
                 }
+
                 int num = rand() % newlist.getsize();
-                cout << newlist.getentry(num).getkor() << endl;
+
+                Json request;
+                request["model"] = "dall-e-3";
+                request["prompt"] = newlist.getentry(num).geteng();
+
+                auto image = openai::image().create(request);
+                cout << "문제 url: " << image["data"][0]["url"] << endl;
+                cout << "정답: ";
                 string userAnswer;
                 getline(cin, userAnswer);
+                if (userAnswer == newlist.getentry(num).geteng()) {
+                    cout << "정답입니다!" << endl;
+                }
+                else {
+                    cout << "오답입니다!" << endl;
+                    cout << "정답은 " << newlist.getentry(num).geteng() << "입니다." << endl;
+                }
 			}
 			else if(userNum == "3")
 			{
 				cout << endl
 					<< "랜덤  퀴즈입니다. 원하는 단어장의 이름을 입력해주세요" << endl;
+                cout << "단어장 목록" << endl;
+                int i = 1;
+                for (auto it = w_lists.begin(); it != w_lists.end(); it++)
+                {
+                    cout << i << ". " << (*it).getname() << " / size: " << (*it).getsize() << endl;
+                    i++;
+                }
 				cout << "나: ";
 				getline(cin, userWord);
+                wordlist newlist;
+                for (auto it = w_lists.begin(); it != w_lists.end(); it++)
+                {
+                    if ((*it).getname() == userWord)
+                    {
+                        newlist = (*it);
+                        break;
+                    }
+                }
 
+                int num = rand() % newlist.getsize();
+                cout << newlist.getentry(num).getkor() << endl;
 			}
 
 		}
 
-        int i = 1;
+        /*int i = 1;
         for (auto it = w_lists.begin(); it != w_lists.end(); it++)
         {
             cout << "단어장 " << (*it).getname() << endl;
             (*it).display();
             cout << endl;
             i++;
-        }
+        }*/
         cout << endl
             << "어떤 작업을 하고 싶으신가요?" << endl
             << "1. 만능 번역기 2. 단어 검색 3. 단어장 관리 4. 퀴즈" << endl
@@ -459,30 +498,6 @@ int main()
         cout << "나 : ";
         getline(cin, userInput);
     }
-
-    // 대화 내용 유지 예시
-    /*while (true)
-    {
-        cout << "나 : ";
-        getline(std::cin, userInput);
-
-        //exit인 경우 종료
-        if (userInput == "exit")
-        {
-            break;
-        }
-
-        chathistory.push_back({{"role", "user"}, {"content", userInput}});
-        Json request;
-        request["model"] = "gpt-3.5-turbo-1106";
-        request["messages"] = chathistory;
-        request["temperature"] = 0;
-
-        auto chat = openai::chat().create(request);
-
-        std::cout << "ChatGPT: " << chat["choices"][0]["message"]["content"] << std::endl;
-        chathistory.push_back({{"role", "assistant"}, {"content", chat["choices"][0]["message"]["content"]}});
-    }*/
 
     return 0;
 }
