@@ -350,7 +350,7 @@ int main()
         string userCount;
 		cout << endl
 			<< "퀴즈에 오신 것을 환영합니다." << endl;
-		cout << "1. 어휘 퀴즈 2. 이미지 퀴즈 3. 랜덤 퀴즈 중 원하는 퀴즈를 숫자로 입력해 주세요." << endl;
+		cout << "1. 어휘 퀴즈 2. 이미지 퀴즈 중 원하는 퀴즈를 숫자로 입력해 주세요." << endl;
 		cout << "나: ";
 		getline(cin, userNum);
 
@@ -454,33 +454,6 @@ int main()
                     cout << "정답은 " << newlist.getentry(num).geteng() << "입니다." << endl;
                 }
 			}
-			else if(userNum == "3")
-			{
-				cout << endl
-					<< "랜덤  퀴즈입니다. 원하는 단어장의 이름을 입력해주세요" << endl;
-                cout << "단어장 목록" << endl;
-                int i = 1;
-                for (auto it = w_lists.begin(); it != w_lists.end(); it++)
-                {
-                    cout << i << ". " << (*it).getname() << " / size: " << (*it).getsize() << endl;
-                    i++;
-                }
-				cout << "나: ";
-				getline(cin, userWord);
-                wordlist newlist;
-                for (auto it = w_lists.begin(); it != w_lists.end(); it++)
-                {
-                    if ((*it).getname() == userWord)
-                    {
-                        newlist = (*it);
-                        break;
-                    }
-                }
-
-                int num = rand() % newlist.getsize();
-                cout << newlist.getentry(num).getkor() << endl;
-			}
-
 		}
 
         /*int i = 1;
