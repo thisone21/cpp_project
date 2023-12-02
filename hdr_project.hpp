@@ -148,6 +148,10 @@ public :
 			cout << "한글 : " << (*it).getkor() << " 영어 : " << (*it).geteng() << " 저장 날짜 : " << (*it).gettime()->tm_mon + 1 << "/" <<(*it).gettime()->tm_mday << endl;
 		}
 	}
+	wordentry getentry(int num)
+	{
+		return wlst.at(num);
+	}
 private :
 	string name;
 	vector<wordentry> wlst;
