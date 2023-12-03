@@ -117,7 +117,7 @@ int main()
 				cout << endl
 					 << "한국어에서 " << userInput << "(으)로의 번역입니다." << endl
 					 << "번역 결과는 다음과 같습니다: " << translatedText << endl;
-				origin.add_engtrans(translatedText);
+				origin.add_trans(translatedText);
 			}
 			else if (userInput == "2")
 			{
@@ -147,7 +147,7 @@ int main()
 				cout << endl
 					 << lang << "에서 한국어로의 번역입니다." << endl
 					 << "번역 결과는 다음과 같습니다: " << translatedText << endl;
-				origin.add_kortrans(translatedText);
+				origin.add_trans(translatedText);
 			}
 		}
 		else if (userInput == "2") // 단어 검색
@@ -229,7 +229,7 @@ int main()
 					}
 					else
 					{
-						cout << "넣을 단어장을 선택해 단어장의 이름을 입력해 주세요. 다음은 현재 단어장 목록입니다." << endl;
+						cout << endl << "넣을 단어장을 선택해 단어장의 이름을 입력해 주세요. 다음은 현재 단어장 목록입니다." << endl;
 						cout << "새로운 이름을 입력할 시 새로운 단어장을 생성합니다." << endl;
 						int i = 1;
 						for (auto it = w_lists.begin(); it != w_lists.end(); it++)
@@ -292,6 +292,21 @@ int main()
 				word newword = word(_kor);
 				newword.addeng(userInput);
 
+				// 예문 생성
+				// Json request;
+				request["model"] = "gpt-3.5-turbo-1106";
+				request["messages"][0]["role"] = "system";
+				request["messages"][0]["content"] = "you are a language model that makes an example sentence from the given word and prints the example sentence";
+				request["messages"][1]["role"] = "user";
+				request["messages"][1]["content"] = "make an example sentence that includes" + newword.geteng() + "and give only the example sentence, without anything else";
+				request["temperature"] = 0;
+
+				chat = openai::chat().create(request);
+
+				string examsent = chat["choices"][0]["message"]["content"].dump();
+				examsent = examsent.substr(1, examsent.size() - 2);
+				cout << "예문: " << examsent << endl;
+
 				// 단어장에 추가
 				cout << endl
 					 << "해당 단어를 단어장에 추가하시겠습니까? [Y/N]" << endl;
@@ -315,7 +330,7 @@ int main()
 					}
 					else
 					{
-						cout << "넣을 단어장을 선택해 단어장의 이름을 입력해 주세요. 다음은 현재 단어장 목록입니다." << endl;
+						cout << endl << "넣을 단어장을 선택해 단어장의 이름을 입력해 주세요. 다음은 현재 단어장 목록입니다." << endl;
 						cout << "새로운 이름을 입력할 시 새로운 단어장을 생성합니다." << endl;
 						int i = 1;
 						for (auto it = w_lists.begin(); it != w_lists.end(); it++)
@@ -358,7 +373,7 @@ int main()
 		{
 			cout << endl
 				 << "------------------------------------------------------------------------------------------" << endl
-				 << "                              단어 검색에 오신 것을 환영합니다.                             " << endl
+				 << "                              단어장 확인에 오신 것을 환영합니다.                             " << endl
 				 << "------------------------------------------------------------------------------------------" << endl
 				 << endl;
 
@@ -795,17 +810,22 @@ int main()
 					}
 					// 유사도 계산
 					double similarity = cossim(input_embed, ans_embed);
-					
+
 					// 퍼센트 출력을 위해
 					similarity *= 100;
-					//scale result
-					similarity = (similarity - 70) * (100/25);
+					// scale result
+					similarity = (similarity - 70) * (100 / 25);
 					cout << "오답입니다. 입력하신 단어와 정답의 유사도는 ";
 					cout << fixed;
 					cout.precision(2);
 					cout << similarity;
 					cout << "% 입니다. " << endl
 						 << endl;
+					if (count == 10)
+					{
+						cout << "오답을 10번 입력하셨습니다. 단어장에 있는 단어 목록을 힌트로 드리겠습니다." << endl;
+						curlist.display();
+					}
 				}
 			}
 		}

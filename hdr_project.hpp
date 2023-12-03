@@ -16,7 +16,7 @@ class word
 {
 public:
 	word(){};
-	word(string _kor) : kor(_kor) {};
+	word(string _kor) : kor(_kor){};
 	word(string _strkr, string _streng)
 	{
 		kor = _strkr;
@@ -34,16 +34,22 @@ public:
 	}
 	void displaykor()
 	{
-		cout << kor << endl;
+		cout << kor;
 	};
 	void displayeng()
 	{
-		cout << eng << endl;
+		cout << eng;
 	};
-	bool operator == (const word &w1)
+	void display()
+	{
+		cout << "한글 : " << kor << endl;
+		cout << "영어 : " << eng << endl;
+	}
+	bool operator==(const word &w1)
 	{
 		return ((*this).kor == w1.kor);
 	}
+
 protected:
 	string kor;
 	string eng;
@@ -52,49 +58,59 @@ protected:
 class Sentence
 {
 public:
-	Sentence(const string& original): originalText(original){};
-	string getoriginalText() const {
+	Sentence(const string &original) : originalText(original){};
+	string getoriginalText() const
+	{
 		return originalText;
 	}
-	string gettranslatedText() const {
+	string gettranslatedText() const
+	{
 		return translatedText;
 	}
-	void add_kortrans(const string& trans){
+	void add_trans(const string &trans)
+	{
 		translatedText = trans;
 	}
-	void add_engtrans(const string& trans){
-		translatedText = trans;
-	}
+
 private:
 	string originalText;
 	string translatedText;
 };
 
-//단어장 entry
+// 단어장 entry
 class wordentry : public word
 {
 public:
-	wordentry(word _word, struct tm* _add_time){ 
-		kor=_word.getkor();
-		eng=_word.geteng();
+	wordentry(word _word, struct tm *_add_time)
+	{
+		kor = _word.getkor();
+		eng = _word.geteng();
 		add_time = _add_time;
-		};
-	struct tm* gettime(){return add_time;}
+	};
+	struct tm *gettime() { return add_time; }
+	void display()
+	{
+		cout << "한글 : ";
+		displaykor();
+		cout << endl;
+		cout << "영어 : ";
+		displayeng();
+		cout << endl;
+		cout << "저장 날짜 : ";
+		cout << add_time->tm_mon + 1 << "/" << add_time->tm_mday << endl;
+	}
 private:
-	struct tm* add_time;
+	struct tm *add_time;
 };
 
-//단어장 클래스
+// 단어장 클래스
 class wordlist
 {
-public :
-	wordlist(){
-		size = 0;
-	};
+public:
+	wordlist()
+	{ size = 0;};
 	void setname(string _name)
-	{
-		name = _name;
-	}
+	{ name = _name;}
 	string getname() { return name; }
 	int getsize() { return size; }
 	void addentry(wordentry _entry, int a)
@@ -108,8 +124,9 @@ public :
 
 		wlst.push_back(_entry);
 		size++;
-		if(a){
-			cout << "단어장에 추가 : " << _entry.geteng() << endl;
+		if (a)
+		{
+			cout << endl << "단어장 " << name << "에 단어 " << _entry.geteng() << "를 추가했습니다. " << endl;
 		}
 	};
 	void removeentry(wordentry _entry)
@@ -127,28 +144,24 @@ public :
 	}
 	void display()
 	{
-		cout << endl << "단어장 " << name << "의 단어 목록" << endl;
+		cout << endl
+			 << "단어장 " << name << "의 단어 목록" << endl;
+		cout << "--------------------" << endl;
 		for (auto it = wlst.begin(); it != wlst.end(); it++)
 		{
-			//cout << "한글: " << (*it).getkor() << " 영어: " << (*it).geteng() << " 저장 날짜: " << (*it).gettime()->tm_mon + 1 << "/" <<(*it).gettime()->tm_mday << endl;
-			cout.width(20);
-			cout << left << "한글: " + (*it).getkor();
-			cout.width(20);
-			cout << left << "영어: " + (*it).geteng();
-			cout << left << "저장 날짜: " << (*it).gettime()->tm_mon + 1 << "/" << (*it).gettime()->tm_mday << endl;
+			(*it).display();
+			cout << "--------------------" << endl;
 		}
 	}
 	wordentry getentry(int num)
-	{
-		return wlst.at(num);
-	}
-private :
+	{return wlst.at(num);}
+private:
 	string name;
 	vector<wordentry> wlst;
 	unsigned size;
 };
 
-double cossim(const vector<double>& vec1, const vector<double>& vec2)
+double cossim(const vector<double> &vec1, const vector<double> &vec2)
 {
 	double dotproduct = 0.0;
 	double norm1 = 0.0, norm2 = 0.0;
@@ -160,13 +173,10 @@ double cossim(const vector<double>& vec1, const vector<double>& vec2)
 		norm2 += vec2[i] * vec2[i];
 	}
 
-	if (norm1 == 0.0 || norm2 == 0.0)
+	if (norm1 == 0.0 || norm2 == 0.0) //floating point exception 방지
 	{
 		return 0.0;
 	}
 
 	return (dotproduct / (sqrt(norm1) * sqrt(norm2)));
 }
-
-
-
