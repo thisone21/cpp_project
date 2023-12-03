@@ -8,6 +8,7 @@
 #include <ctime>
 #include <cstdlib>
 #include <cmath>
+#include <iomanip>
 
 using namespace std;
 
@@ -46,26 +47,6 @@ public:
 protected:
 	string kor;
 	string eng;
-};
-
-//유의어 클래스
-class synonym : public word
-{
-public:
-	synonym(string _kor) : word(_kor) {};
-
-private:
-	vector<string> synonyms;
-};
-
-//반의어 클래스
-class antonym : public word
-{
-public:
-	antonym(string _kor) : word(_kor) {};
-
-private:
-	vector<string> antonyms;
 };
 
 class Sentence
@@ -149,7 +130,12 @@ public :
 		cout << endl << "단어장 " << name << "의 단어 목록" << endl;
 		for (auto it = wlst.begin(); it != wlst.end(); it++)
 		{
-			cout << "한글: " << (*it).getkor() << " 영어: " << (*it).geteng() << " 저장 날짜: " << (*it).gettime()->tm_mon + 1 << "/" <<(*it).gettime()->tm_mday << endl;
+			//cout << "한글: " << (*it).getkor() << " 영어: " << (*it).geteng() << " 저장 날짜: " << (*it).gettime()->tm_mon + 1 << "/" <<(*it).gettime()->tm_mday << endl;
+			cout.width(20);
+			cout << left << "한글: " + (*it).getkor();
+			cout.width(20);
+			cout << left << "영어: " + (*it).geteng();
+			cout << left << "저장 날짜: " << (*it).gettime()->tm_mon + 1 << "/" << (*it).gettime()->tm_mday << endl;
 		}
 	}
 	wordentry getentry(int num)

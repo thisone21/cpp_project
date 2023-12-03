@@ -105,9 +105,9 @@ int main()
 				Json request;
 				request["model"] = "gpt-3.5-turbo-1106";
 				request["messages"][0]["role"] = "system";
-				request["messages"][0]["content"] = "You are a translator model which translates a korean sentence input into given language";
+				request["messages"][0]["content"] = "You are a translator model which translates a korean sentence input into given language, and give only the result without anything else";
 				request["messages"][1]["role"] = "user";
-				request["messages"][1]["content"] = "translate" + origin.getoriginalText() + "into" + userInput + "without its pronounciation";
+				request["messages"][1]["content"] = "translate" + origin.getoriginalText() + "into" + userInput + "language without its pronounciation";
 				request["temperature"] = 0;
 
 				auto chat = openai::chat().create(request);
@@ -135,7 +135,7 @@ int main()
 				Json request;
 				request["model"] = "gpt-3.5-turbo-1106";
 				request["messages"][0]["role"] = "system";
-				request["messages"][0]["content"] = "You are a translator model which translates a sentence input of given language into korean";
+				request["messages"][0]["content"] = "You are a translator model which translates a sentence input of given language into korean, and give only the result without anything else";
 				request["messages"][1]["role"] = "user";
 				request["messages"][1]["content"] = "translate" + origin.getoriginalText() + "into korean";
 				request["temperature"] = 0;
@@ -513,7 +513,7 @@ int main()
 				}
 
 				cout << endl
-					 << "원하시는 횟수를 입력해주세요" << endl;
+					 << "1부터 " << newlist.getsize() << "중 원하시는 문제 수를 입력해주세요" << endl;
 				cout << "사용자: ";
 				getline(cin, userCount);
 				cout << endl;
@@ -793,12 +793,13 @@ int main()
 					{
 						input_embed.push_back(val.get<double>());
 					}
-
 					// 유사도 계산
 					double similarity = cossim(input_embed, ans_embed);
-
+					
 					// 퍼센트 출력을 위해
 					similarity *= 100;
+					//scale result
+					similarity = (similarity - 70) * (100/25);
 					cout << "오답입니다. 입력하신 단어와 정답의 유사도는 ";
 					cout << fixed;
 					cout.precision(2);
