@@ -12,7 +12,7 @@ int main()
 	vector<wordlist> w_lists;
 
 	cout << "------------------------------------------------------------------------------------------" << endl;
-	cout << "                    안녕하세요? 언어학습 프로그램에 오신 것을 환영합니다.                     " << endl;
+	cout << "                    안녕하세요? 외국어학습 프로그램에 오신 것을 환영합니다.                     " << endl;
 	cout << "------------------------------------------------------------------------------------------" << endl;
 	cout << endl
 		 << "                       어떤 작업을 하고 싶으신가요? 숫자로 입력해 주세요.                      " << endl
@@ -22,13 +22,18 @@ int main()
 	cout << endl;
 	cout << "사용자: ";
 
+	wordlist newlist;
+	newlist.setname("오답노트");
+	w_lists.push_back(newlist);
+
+	//기본 단어장 fruits
 	string wordexample_kor_fruit[10] = {"사과", "바나나", "배", "수박", "귤", "딸기", "복숭아", "체리", "포도", "오렌지"};
 	string wordexample_eng_fruit[10] = {"apple", "banana", "pear", "watermelon", "tangerine", "strawberry", "peach", "cherry", "grape", "orange"};
 
 	word newword(wordexample_kor_fruit[0], wordexample_eng_fruit[0]);
 
 	wordlist newwlist;
-	newwlist.setname("fruit");
+	newwlist.setname("fruits");
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -40,10 +45,6 @@ int main()
 	}
 
 	w_lists.push_back(newwlist);
-
-	wordlist newlist;
-	newlist.setname("오답노트");
-	w_lists.push_back(newlist);
 
 	getline(cin, userInput);
 
@@ -229,7 +230,8 @@ int main()
 					}
 					else
 					{
-						cout << endl << "넣을 단어장을 선택해 단어장의 이름을 입력해 주세요. 다음은 현재 단어장 목록입니다." << endl;
+						cout << endl
+							 << "넣을 단어장을 선택해 단어장의 이름을 입력해 주세요. 다음은 현재 단어장 목록입니다." << endl;
 						cout << "새로운 이름을 입력할 시 새로운 단어장을 생성합니다." << endl;
 						int i = 1;
 						for (auto it = w_lists.begin(); it != w_lists.end(); it++)
@@ -330,7 +332,8 @@ int main()
 					}
 					else
 					{
-						cout << endl << "넣을 단어장을 선택해 단어장의 이름을 입력해 주세요. 다음은 현재 단어장 목록입니다." << endl;
+						cout << endl
+							 << "넣을 단어장을 선택해 단어장의 이름을 입력해 주세요. 다음은 현재 단어장 목록입니다." << endl;
 						cout << "새로운 이름을 입력할 시 새로운 단어장을 생성합니다." << endl;
 						int i = 1;
 						for (auto it = w_lists.begin(); it != w_lists.end(); it++)
@@ -657,6 +660,7 @@ int main()
 					} while (flag == 0 || flag == 2);
 				}
 
+				cout << "이미지를 생성하는 중입니다. 잠시만 기다려 주세요. " << endl << endl;
 				int num = rand() % newlist.getsize();
 
 				Json request;
